@@ -1,0 +1,18 @@
+{
+  "name": "apollo11/cli-logger",
+  "description": "Log any cli errors",
+  "license": "Apache-2.0",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Giorgi Keshikashvili",
+      "email": "keshikashviligio@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": { "apollo11\\cliLogger": "" }
+  },
+  "require": {
+    "php": ">=5.6"
+  }
+}
