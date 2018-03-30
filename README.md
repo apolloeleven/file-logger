@@ -2,7 +2,7 @@
 
 ## Basic usage ##
 
-```
+```php
 include_once 'CliColor.php';
 include_once 'CliLogger.php';
 
