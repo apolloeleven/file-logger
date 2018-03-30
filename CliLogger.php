@@ -16,7 +16,9 @@ class CliLogger
 
     const FILE_CREATE_TYPE_BY_SIZE = 2;
 
-    public $fileCreateType = self::FILE_CREATE_TYPE_BY_TIME;
+    public $enableColors = true;
+
+    public $fileCreateType = self::FILE_CREATE_TYPE_BY_SIZE;
 
     public $fileReCreateMinutes = 1;
     public $fileReCreateHours = 0;
@@ -24,7 +26,7 @@ class CliLogger
     public $fileReCreateMonths = 0;
     public $fileReCreateYears = 0;
 
-    public $filReeCreateSize = 1;
+    public $filReCreateSize = 900;
 
     // Log file attributes
     public $logFilePath;
@@ -76,7 +78,9 @@ class CliLogger
         if (!file_exists($this->logFilePath)) {
             throw new \Exception('logFilePath is invalid');
         }
-        $message = CliColor::getColoredString($message, $fColor, $bColor);
+        if($this->enableColors === true){
+            $message = CliColor::getColoredString($message, $fColor, $bColor);
+        }
 
         $expiredLogFile = $this->checkFileCreation();
 
@@ -111,11 +115,17 @@ class CliLogger
             $fileName = $latestFile;
         }
 
-        if($expiredLogFile && $fileName === $expiredLogFile){
+        if($expiredLogFile){
             $pathInfo = pathinfo($fileName);
-            $fileName = $expiredLogFile = $pathInfo['filename'] . '_' .time(). '.'. $pathInfo['extension'];
-        }elseif($expiredLogFile && $this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME){
-            $expiredLogFile = false;
+            if($this->fileCreateType === self::FILE_CREATE_TYPE_BY_SIZE){
+                if($fileName === $expiredLogFile){
+                    $fileName = $expiredLogFile = $pathInfo['filename'] . '_' .time(). '.'. $pathInfo['extension'];
+                }else{
+                    $expiredLogFile = false;
+                }
+            }elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME){
+                $expiredLogFile = false;
+            }
         }
 
         return $expiredLogFile ?: $fileName;
@@ -139,7 +149,7 @@ class CliLogger
         $logFileName = $this->getLatestLogFile();
         $logFilePath = $this->logFilePath . '/' . $logFileName;
         if ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_SIZE) {
-            if (file_exists($logFilePath) && filesize($logFilePath) >= $this->filReeCreateSize) {
+            if (file_exists($logFilePath) && filesize($logFilePath) >= $this->filReCreateSize) {
                 return $logFileName;
             }
         } elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME) {
@@ -168,7 +178,7 @@ class CliLogger
         $files = [];
         if ($handle = opendir($this->logFilePath)) {
             while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != "..") {
+                if ($file != "." && $file != ".." && $file != ".gitignore") {
                     $files[filemtime($this->logFilePath . '/' . $file)] = $file;
                 }
             }

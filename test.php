@@ -9,8 +9,9 @@ include_once 'CliColor.php';
 include_once 'CliLogger.php';
 
 $logger = new \apollo11\cliLogger\CliLogger([
+    'enableColors' => false,
     'logFilePath' => dirname(__FILE__) . '/logs',
-    'logFileName' => 'test12.log',
+    'logFileName' => 'mylogfile.log',
     'logFileDateFormat' => "Y_m_d_H_i_s",
     'logFileTemplate' => '{date}_{fileName}',
     'logTextDateFormat' => 'Y-m-d',
