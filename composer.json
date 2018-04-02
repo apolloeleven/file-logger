@@ -10,7 +10,7 @@
     }
   ],
   "autoload": {
-    "psr-4": { "apollo11\\cliLogger": "" }
+    "psr-4": { "apollo11\\cliLogger\\": "" }
   },
   "require": {
     "php": ">=5.6"
