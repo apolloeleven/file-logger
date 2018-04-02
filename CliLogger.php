@@ -39,6 +39,10 @@ class CliLogger
     public $logTextTemplate = "[ {date} | {type} ] - {message} " . PHP_EOL;
 
 
+    /**
+     * CliLogger constructor.
+     * @param $config
+     */
     public function __construct($config)
     {
         if (!empty($config)) {
@@ -49,30 +53,59 @@ class CliLogger
     }
 
 
+    /**
+     * @param $message
+     * @param string $fColor
+     * @param null $bColor
+     * @param string $type
+     * @return string
+     */
     public function log($message, $fColor = CliColor::F_WHITE, $bColor = null, $type = 'LOG')
     {
         return $this->writeLog($this->processLogTextTemplate($message, $type), $fColor, $bColor);
     }
 
 
+    /**
+     * @param $message
+     * @param string $type
+     * @return string
+     */
     public function error($message, $type = 'ERROR')
     {
         return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_RED);
     }
 
 
+    /**
+     * @param $message
+     * @param string $type
+     * @return string
+     */
     public function info($message, $type = 'INFO')
     {
         return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_LIGHT_BLUE);
     }
 
 
+    /**
+     * @param $message
+     * @param string $type
+     * @return string
+     */
     public function success($message, $type = 'SUCCESS')
     {
         return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_LIGHT_GREEN);
     }
 
 
+    /**
+     * @param $message
+     * @param $fColor
+     * @param null $bColor
+     * @return string
+     * @throws \Exception
+     */
     private function writeLog($message, $fColor, $bColor = null)
     {
         if (!file_exists($this->logFilePath)) {
@@ -90,6 +123,11 @@ class CliLogger
     }
 
 
+    /**
+     * @param $object
+     * @param $properties
+     * @return mixed
+     */
     private function configure($object, $properties)
     {
         foreach ($properties as $name => $value) {
@@ -100,6 +138,10 @@ class CliLogger
     }
 
 
+    /**
+     * @param $expiredLogFile
+     * @return bool|mixed|string
+     */
     private function processFileTemplate($expiredLogFile)
     {
 
@@ -132,6 +174,11 @@ class CliLogger
     }
 
 
+    /**
+     * @param $message
+     * @param string $type
+     * @return string
+     */
     private function processLogTextTemplate($message, $type = 'LOG')
     {
         $parts = [
@@ -144,6 +191,9 @@ class CliLogger
     }
 
 
+    /**
+     * @return bool|mixed
+     */
     private function checkFileCreation()
     {
         $logFileName = $this->getLatestLogFile();
@@ -173,6 +223,9 @@ class CliLogger
     }
 
 
+    /**
+     * @return bool|mixed
+     */
     private function getLatestLogFile()
     {
         $files = [];

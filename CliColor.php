@@ -36,7 +36,12 @@ class CliColor
     const B_CYAN = '46';
     const B_LIGHT_GRAY = '47';
 
-    // Returns colored string
+    /**
+     * @param $string
+     * @param null $foregroundColor
+     * @param null $backgroundColor
+     * @return string
+     */
     public static function getColoredString($string, $foregroundColor = null, $backgroundColor = null) {
         // Set foreground color and background color
         $coloredString = "";
