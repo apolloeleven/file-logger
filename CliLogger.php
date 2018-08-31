@@ -16,6 +16,10 @@ class CliLogger
 
     const FILE_CREATE_TYPE_BY_SIZE = 2;
 
+    const FILE_CREATE_TYPE_BY_DELETE_AFTER_X_DAY_AND_TIME = 3;
+
+    public $saveLatestFileNumber = 1;
+
     public $enableColors = true;
 
     public $fileCreateType = self::FILE_CREATE_TYPE_BY_SIZE;
@@ -119,6 +123,14 @@ class CliLogger
 
         file_put_contents($this->logFilePath . '/' . $this->processFileTemplate($expiredLogFile), $message, FILE_APPEND);
 
+
+        if($this->fileCreateType === self::FILE_CREATE_TYPE_BY_DELETE_AFTER_X_DAY_AND_TIME){
+            /*check old logs and delete them*/
+            $this->deleteOldLogs();
+        }
+
+
+
         return $message;
     }
 
@@ -158,8 +170,9 @@ class CliLogger
         }
 
         if($expiredLogFile){
+
             $pathInfo = pathinfo($fileName);
-            if($this->fileCreateType === self::FILE_CREATE_TYPE_BY_SIZE){
+            if($this->fileCreateType === self::FILE_CREATE_TYPE_BY_SIZE || $this->fileCreateType === self::FILE_CREATE_TYPE_BY_DELETE_AFTER_X_DAY_AND_TIME){
                 if($fileName === $expiredLogFile){
                     $fileName = $expiredLogFile = $pathInfo['filename'] . '_' .time(). '.'. $pathInfo['extension'];
                 }else{
@@ -169,6 +182,7 @@ class CliLogger
                 $expiredLogFile = false;
             }
         }
+
 
         return $expiredLogFile ?: $fileName;
     }
@@ -191,32 +205,79 @@ class CliLogger
     }
 
 
+    function deleteOldLogs()
+    {
+
+        if (is_dir($this->logFilePath)) {
+            $dirArray = scandir($this->logFilePath);
+            unset($dirArray[0]);
+            unset($dirArray[1]);
+            unset($dirArray[2]);
+
+            $allFilesArray = array();
+
+            foreach ($dirArray as $key =>  $files) {
+                $allFilesArray[$key]['time'] = filemtime($this->logFilePath . '/' . $files);
+                $allFilesArray[$key]['name'] = $files;
+            }
+            usort($allFilesArray, function ($a, $b) {
+                return $b['time'] - $a['time'];
+            });
+
+//            $allFilesArrayForDump = $allFilesArray;
+
+            if (count($allFilesArray) > $this->saveLatestFileNumber) {
+                for ($i = 0; $i < $this->saveLatestFileNumber; $i++) {
+                    unset($allFilesArray[$i]);
+                }
+
+                foreach ($allFilesArray as $deteFileNames) {
+                    $file = $this->logFilePath . '/' . $deteFileNames['name'];
+                    if (file_exists($file)) {
+                        unlink($file);
+                        echo 'Deleted file: Time:' . $deteFileNames['time'] . " Name: ". $deteFileNames['name'] . "<br>";
+                    }
+                }
+            }
+
+
+        }
+    }
+
+
     /**
      * @return bool|mixed
      */
     private function checkFileCreation()
     {
+
         $logFileName = $this->getLatestLogFile();
         $logFilePath = $this->logFilePath . '/' . $logFileName;
+        $lastModified = filemtime($logFilePath);
+        $ex = time() - $lastModified;
+        $t =  (
+            ($this->fileReCreateMinutes * 60)
+            + ($this->fileReCreateHours * 3600)
+            + ($this->fileReCreateDays * 86400)
+            + ($this->fileReCreateMonths * 2592000)
+            + ($this->fileReCreateYears * 31536000)
+        );
+
         if ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_SIZE) {
             if (file_exists($logFilePath) && filesize($logFilePath) >= $this->filReCreateSize) {
                 return $logFileName;
             }
         } elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME) {
             // TODO get first create date from file
-            $lastModified = filemtime($logFilePath);
-            if (file_exists($logFilePath)
-                && (time() - $lastModified)
-                >= (
-                      ($this->fileReCreateMinutes * 60)
-                    + ($this->fileReCreateHours * 3600)
-                    + ($this->fileReCreateDays * 86400)
-                    + ($this->fileReCreateMonths * 2592000)
-                    + ($this->fileReCreateYears * 31536000)
-                )
-            ) {
+
+            if (file_exists($logFilePath)  && ($ex >= $t)) {
                 return $logFileName;
             }
+        } elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_DELETE_AFTER_X_DAY_AND_TIME) {
+            if (file_exists($logFilePath) && ($ex >= $t)){
+                return $logFileName;
+            }
+
         }
 
         return false;

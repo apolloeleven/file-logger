@@ -39,3 +39,9 @@ for ($i = 0; $i < 20; $i++){
 }
 
 ```
+
+For delete log file every x day  use:
+
+    'fileCreateType' => 3,
+    'fileReCreateMinutes' => (integer) time in minutes,
+    'saveLatestFileNumber' => (integer) number how much files to keep
