@@ -125,7 +125,6 @@ class CliLogger
 
         if ($this->saveLatestFileNumber > 1) {
             /*check old logs and delete them*/
-            set
             $this->deleteOldLogs();
         }
 
