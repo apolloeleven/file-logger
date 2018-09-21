@@ -126,6 +126,7 @@ class CliLogger
         if ($this->saveLatestFileNumber > 1) {
             /*check old logs and delete them*/
             $this->deleteOldLogs();
+
         }
 
 
@@ -205,26 +206,27 @@ class CliLogger
 
     function deleteOldLogs()
     {
-
         if (is_dir($this->logFilePath)) {
-            $dirArray = scandir($this->logFilePath);
-            unset($dirArray[0]);
-            unset($dirArray[1]);
-            unset($dirArray[2]);
 
-            $allFilesArray = array();
+            $logFilePath = $this->logFilePath;
+            $logFileName = $this->logFileName;
+            $files = glob("${$logFilePath}/*.${$logFileName}");
+            $allFilesArray = [];
 
-            foreach ($dirArray as $key => $files) {
-                $allFilesArray[$key]['time'] = filemtime($this->logFilePath . '/' . $files);
-                $allFilesArray[$key]['name'] = $files;
+            foreach ($files as $key => $file) {
+                $allFilesArray[$key]['time'] = filemtime($this->logFilePath . '/' . $file);
+                $allFilesArray[$key]['name'] = $file;
             }
+
             usort($allFilesArray, function ($a, $b) {
                 return $b['time'] - $a['time'];
             });
 
             if (count($allFilesArray) > $this->saveLatestFileNumber && $this->saveLatestFileNumber > 1) {
                 for ($i = 0; $i < $this->saveLatestFileNumber; $i++) {
-                    unset($allFilesArray[$i]);
+                    if ($allFilesArray[$i]['time'] >= date($this->logFileDateFormat)) {
+                        unset($allFilesArray[$i]);
+                    }
                 }
 
                 foreach ($allFilesArray as $deteFileNames) {
