@@ -6,10 +6,10 @@
  * Time: 12:39 PM
  */
 
-namespace apollo11\cliLogger;
+namespace apollo11\fileLogger;
 
 
-class CliLogger
+class FileLogger
 {
     //log file creation types
     const FILE_CREATE_TYPE_BY_TIME = 1;
@@ -72,7 +72,7 @@ class CliLogger
      * @return string
      * @throws \Exception
      */
-    public function log($message, $fColor = CliColor::F_WHITE, $bColor = null, $type = 'LOG')
+    public function log($message, $fColor = FileColor::F_WHITE, $bColor = null, $type = 'LOG')
     {
         return $this->writeLog($this->processLogTextTemplate($message, $type), $fColor, $bColor);
     }
@@ -88,7 +88,7 @@ class CliLogger
      */
     public function error($message, $type = 'ERROR')
     {
-        return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_RED);
+        return $this->writeLog($this->processLogTextTemplate($message, $type), FileColor::F_RED);
     }
 
 
@@ -102,7 +102,7 @@ class CliLogger
      */
     public function info($message, $type = 'INFO')
     {
-        return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_LIGHT_BLUE);
+        return $this->writeLog($this->processLogTextTemplate($message, $type), FileColor::F_LIGHT_BLUE);
     }
 
 
@@ -116,7 +116,7 @@ class CliLogger
      */
     public function success($message, $type = 'SUCCESS')
     {
-        return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_LIGHT_GREEN);
+        return $this->writeLog($this->processLogTextTemplate($message, $type), FileColor::F_LIGHT_GREEN);
     }
 
 
@@ -137,7 +137,7 @@ class CliLogger
             throw new \Exception('logFilePath is invalid');
         }
         if ($this->enableColors === true) {
-            $message = CliColor::getColoredString($message, $fColor, $bColor);
+            $message = FileColor::getColoredString($message, $fColor, $bColor);
         }
 
         $expiredLogFile = $this->checkFileCreation();

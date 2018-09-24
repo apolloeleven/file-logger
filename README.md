@@ -1,4 +1,4 @@
-# cli-logger
+# File-logger
 
 Installation
 ------------
@@ -14,7 +14,7 @@ php composer.phar require --prefer-dist apollo11/cli-logger "*"
 or add
 
 ```
-"apollo11/cli-logger": "*"
+"apollo11/file-logger": "*"
 ```
 
 to the require section of your `composer.json` file.
@@ -22,8 +22,8 @@ to the require section of your `composer.json` file.
 ## Basic usage ##
 
 ```
-include_once 'CliColor.php';
-include_once 'CliLogger.php';
+include_once 'FileColor.php';
+include_once 'FileLogger.php';
 
 $logger = new \apollo11\cliLogger\CliLogger([
     'logFilePath' => dirname(__FILE__) . '/logs',
