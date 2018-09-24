@@ -8,7 +8,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist apollo11/cli-logger "*"
+php composer.phar require --prefer-dist apollo11/file-logger "*"
 ```
 
 or add
