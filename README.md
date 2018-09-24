@@ -35,7 +35,7 @@ $logger = new \apollo11\fileLogger\FileLogger([
 ]);
 
 for ($i = 0; $i < 20; $i++){
-    $logger->log("My test $i", \apollo11\cliLogger\CliColor::F_WHITE, \apollo11\cliLogger\CliColor::B_GREEN);
+    $logger->log("My test $i", \apollo11\fileLogger\FileColor::F_WHITE, \apollo11\fileLogger\FileColor::B_GREEN);
 }
 
 ```
