@@ -90,10 +90,3 @@ logFileTemplate         // log file template deafault value   "{date}_{fileName}
 logTextDateFormat       // log text date format default value   "Y-m-d H:i:s"
 logTextTemplate         // log text template default value   "[ {date} | {type} ] - {message} " . PHP_EOL
 ```
-
-
-For delete log file every x day  use:
-
-    'fileCreateType' => 3,
-    'fileReCreateMinutes' => (integer) time in minutes,
-    'saveLatestFileNumber' => (integer) number how much files to keep

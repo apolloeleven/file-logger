@@ -5,6 +5,7 @@
  * Date: 10/13/17
  * Time: 3:17 PM
  */
+
 namespace apollo11\cliLogger;
 
 
@@ -46,18 +47,19 @@ class CliColor
      * @param null $backgroundColor
      * @return string
      */
-    public static function getColoredString($string, $foregroundColor = null, $backgroundColor = null) {
+    public static function getColoredString($string, $foregroundColor = null, $backgroundColor = null)
+    {
         // Set foreground color and background color
         $coloredString = "";
 
-        if($foregroundColor !== null){
+        if ($foregroundColor !== null) {
             $coloredString .= "\033[" . $foregroundColor . "m";
         }
-        if($backgroundColor !== null) {
+        if ($backgroundColor !== null) {
             $coloredString .= "\033[" . $backgroundColor . "m";
         }
 
-        $coloredString .=  $string . "\033[0m";
+        $coloredString .= $string . "\033[0m";
 
         return $coloredString;
     }
