@@ -25,7 +25,7 @@ to the require section of your `composer.json` file.
 include_once 'FileColor.php';
 include_once 'FileLogger.php';
 
-$logger = new \apollo11\cliLogger\CliLogger([
+$logger = new \apollo11\fileLogger\FileLogger([
     'logFilePath' => dirname(__FILE__) . '/logs',
     'logFileName' => 'test12.log',
     'logFileDateFormat' => "Y_m_d_H_i_s",
