@@ -10,6 +10,7 @@ namespace apollo11\cliLogger;
 
 class CliColor
 {
+    // Text color options for log text
     const F_BLACK = '0;30';
     const F_DARK_GREY = '1;30';
     const F_BLUE = '0;34';
@@ -37,6 +38,9 @@ class CliColor
     const B_LIGHT_GRAY = '47';
 
     /**
+     * Get colored string
+     *
+     * Returns colored string with chosen configuration for log text
      * @param $string
      * @param null $foregroundColor
      * @param null $backgroundColor

@@ -11,7 +11,7 @@ namespace apollo11\cliLogger;
 
 class CliLogger
 {
-
+    //log file creation types
     const FILE_CREATE_TYPE_BY_TIME = 1;
 
     const FILE_CREATE_TYPE_BY_SIZE = 2;
@@ -19,17 +19,21 @@ class CliLogger
 
     public $saveLatestFileNumber = 1;
 
+    //color option for log text
     public $enableColors = true;
 
+    //log file creation type property
     public $fileCreateType = self::FILE_CREATE_TYPE_BY_SIZE;
 
+    //Log file recreation units
     public $fileReCreateMinutes = 1;
     public $fileReCreateHours = 0;
     public $fileReCreateDays = 0;
     public $fileReCreateMonths = 0;
     public $fileReCreateYears = 0;
 
-    public $filReCreateSize = 900;
+    //Log file recreation size
+    public $filReCreateSize = 900; //size in bytes
 
     // Log file attributes
     public $logFilePath;
@@ -57,11 +61,16 @@ class CliLogger
 
 
     /**
+     * Log message
+     *
+     * Log message with color parameters in log file
+     *
      * @param $message
      * @param string $fColor
      * @param null $bColor
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function log($message, $fColor = CliColor::F_WHITE, $bColor = null, $type = 'LOG')
     {
@@ -70,9 +79,12 @@ class CliLogger
 
 
     /**
+     * Log error
+     *
      * @param $message
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function error($message, $type = 'ERROR')
     {
@@ -81,9 +93,12 @@ class CliLogger
 
 
     /**
+     * Log info
+     *
      * @param $message
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function info($message, $type = 'INFO')
     {
@@ -92,9 +107,12 @@ class CliLogger
 
 
     /**
+     * Log success
+     *
      * @param $message
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function success($message, $type = 'SUCCESS')
     {
@@ -103,6 +121,10 @@ class CliLogger
 
 
     /**
+     * Log write
+     *
+     * Write log message with given type and text color parameters in log file
+     *
      * @param $message
      * @param $fColor
      * @param null $bColor
@@ -135,6 +157,10 @@ class CliLogger
 
 
     /**
+     * Constructor configuration
+     *
+     * Returns configuration object for constructor
+     *
      * @param $object
      * @param $properties
      * @return mixed
@@ -150,6 +176,10 @@ class CliLogger
 
 
     /**
+     * Log file template
+     *
+     * Returns template for log file with chosen configuration
+     *
      * @param $expiredLogFile
      * @return bool|mixed|string
      */
@@ -188,6 +218,9 @@ class CliLogger
 
 
     /**
+     * Log text template
+     *
+     * Returns template for log text with chosen configuration
      * @param $message
      * @param string $type
      * @return string
@@ -244,6 +277,12 @@ class CliLogger
 
 
     /**
+     * File creation check
+     *
+     * Function checks if log file was created according FILE_CREATE_TYPE option
+     *
+     * Returns log file name or boolean(false)
+     *
      * @return bool|mixed
      */
     private function checkFileCreation()
@@ -278,6 +317,10 @@ class CliLogger
 
 
     /**
+     * Get latest log
+     *
+     * Return latest log file from log directory
+     *
      * @return bool|mixed
      */
     private function getLatestLogFile()
