@@ -200,7 +200,6 @@ class CliLogger
                 return $logFileName;
             }
         } elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME) {
-            // TODO get first create date from file
             $lasElementInDir = count(scandir($this->logFilePath));
             $lastModified = filemtime($logFilePath);
             $lastModifiedLogFileDate = strtotime(explode('_', scandir($this->logFilePath)[$lasElementInDir - 1])[0] . "+" . $this->fileReCreateDays . " day");
