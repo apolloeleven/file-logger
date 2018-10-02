@@ -58,16 +58,13 @@ enableColors       //colored text for logs , deafult value true
 fileCreateType     //log file creation type  , default value   "FILE_CREATE_TYPE_BY_TIME"
 ```
 
-<h5>Log file recreation units</h5>
+<h5>Log file recreation days</h5>
 
 ```
-Add one of this properties if file recreation type set to   "FILE_CREATE_TYPE_BY_TIME"
+Add  this properties if file recreation type set to   "FILE_CREATE_TYPE_BY_TIME"
 
-fileReCreateMinutes     //  (integer)
-fileReCreateHours       //  (integer)
 fileReCreateDays        //  (integer)
-fileReCreateMonths      //  (integer)
-fileReCreateYears       //  (integer)
+
 ```
 <h5>Log file recreation size</h5>
 
