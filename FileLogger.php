@@ -6,24 +6,34 @@
  * Time: 12:39 PM
  */
 
-namespace apollo11\cliLogger;
+namespace apollo11\fileLogger;
 
 
-class CliLogger
+class FileLogger
 {
-
+    //log file creation types
     const FILE_CREATE_TYPE_BY_TIME = 1;
 
     const FILE_CREATE_TYPE_BY_SIZE = 2;
 
+
+    public $saveLatestFileNumber = 1;
+
+    //color option for log text
     public $enableColors = true;
 
+    //log file creation type property
     public $fileCreateType = self::FILE_CREATE_TYPE_BY_SIZE;
 
+    //Log file recreation units
+    public $fileReCreateMinutes = 1;
+    public $fileReCreateHours = 0;
+    public $fileReCreateDays = 0;
+    public $fileReCreateMonths = 0;
+    public $fileReCreateYears = 0;
 
-    public $fileReCreateDays = 1;
-
-    public $filReCreateSize = 900;
+    //Log file recreation size
+    public $filReCreateSize = 900; //size in bytes
 
     // Log file attributes
     public $logFilePath;
@@ -51,52 +61,70 @@ class CliLogger
 
 
     /**
+     * Log message
+     *
+     * Log message with color parameters in log file
+     *
      * @param $message
      * @param string $fColor
      * @param null $bColor
      * @param string $type
      * @return string
+     * @throws \Exception
      */
-    public function log($message, $fColor = CliColor::F_WHITE, $bColor = null, $type = 'LOG')
+    public function log($message, $fColor = FileColor::F_WHITE, $bColor = null, $type = 'LOG')
     {
         return $this->writeLog($this->processLogTextTemplate($message, $type), $fColor, $bColor);
     }
 
 
     /**
+     * Log error
+     *
      * @param $message
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function error($message, $type = 'ERROR')
     {
-        return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_RED);
+        return $this->writeLog($this->processLogTextTemplate($message, $type), FileColor::F_RED);
     }
 
 
     /**
+     * Log info
+     *
      * @param $message
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function info($message, $type = 'INFO')
     {
-        return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_LIGHT_BLUE);
+        return $this->writeLog($this->processLogTextTemplate($message, $type), FileColor::F_LIGHT_BLUE);
     }
 
 
     /**
+     * Log success
+     *
      * @param $message
      * @param string $type
      * @return string
+     * @throws \Exception
      */
     public function success($message, $type = 'SUCCESS')
     {
-        return $this->writeLog($this->processLogTextTemplate($message, $type), CliColor::F_LIGHT_GREEN);
+        return $this->writeLog($this->processLogTextTemplate($message, $type), FileColor::F_LIGHT_GREEN);
     }
 
 
     /**
+     * Log write
+     *
+     * Write log message with given type and text color parameters in log file
+     *
      * @param $message
      * @param $fColor
      * @param null $bColor
@@ -109,18 +137,30 @@ class CliLogger
             throw new \Exception('logFilePath is invalid');
         }
         if ($this->enableColors === true) {
-            $message = CliColor::getColoredString($message, $fColor, $bColor);
+            $message = FileColor::getColoredString($message, $fColor, $bColor);
         }
 
         $expiredLogFile = $this->checkFileCreation();
 
         file_put_contents($this->logFilePath . '/' . $this->processFileTemplate($expiredLogFile), $message, FILE_APPEND);
 
+
+        if ($this->saveLatestFileNumber > 1) {
+            /*check old logs and delete them*/
+            $this->deleteOldLogs();
+
+        }
+
+
         return $message;
     }
 
 
     /**
+     * Constructor configuration
+     *
+     * Returns configuration object for constructor
+     *
      * @param $object
      * @param $properties
      * @return mixed
@@ -136,6 +176,10 @@ class CliLogger
 
 
     /**
+     * Log file template
+     *
+     * Returns template for log file with chosen configuration
+     *
      * @param $expiredLogFile
      * @return bool|mixed|string
      */
@@ -155,6 +199,7 @@ class CliLogger
         }
 
         if ($expiredLogFile) {
+
             $pathInfo = pathinfo($fileName);
             if ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_SIZE) {
                 if ($fileName === $expiredLogFile) {
@@ -162,16 +207,20 @@ class CliLogger
                 } else {
                     $expiredLogFile = false;
                 }
-            } elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME) {
+            } else {
                 $expiredLogFile = false;
             }
         }
+
 
         return $expiredLogFile ?: $fileName;
     }
 
 
     /**
+     * Log text template
+     *
+     * Returns template for log text with chosen configuration
      * @param $message
      * @param string $type
      * @return string
@@ -188,7 +237,52 @@ class CliLogger
     }
 
 
+    function deleteOldLogs()
+    {
+        if (is_dir($this->logFilePath)) {
+
+            $logFilePath = $this->logFilePath;
+            $logFileName = $this->logFileName;
+            $files = glob("${$logFilePath}/*.${$logFileName}");
+            $allFilesArray = [];
+
+            foreach ($files as $key => $file) {
+                $allFilesArray[$key]['time'] = filemtime($this->logFilePath . '/' . $file);
+                $allFilesArray[$key]['name'] = $file;
+            }
+
+            usort($allFilesArray, function ($a, $b) {
+                return $b['time'] - $a['time'];
+            });
+
+            if (count($allFilesArray) > $this->saveLatestFileNumber && $this->saveLatestFileNumber > 1) {
+                for ($i = 0; $i < $this->saveLatestFileNumber; $i++) {
+                    if ($allFilesArray[$i]['time'] >= date($this->logFileDateFormat)) {
+                        unset($allFilesArray[$i]);
+                    }
+                }
+
+                foreach ($allFilesArray as $deteFileNames) {
+                    $file = $this->logFilePath . '/' . $deteFileNames['name'];
+                    if (file_exists($file)) {
+                        unlink($file);
+                        echo 'Deleted file: Time:' . $deteFileNames['time'] . " Name: " . $deteFileNames['name'] . "<br>";
+                    }
+                }
+            }
+
+
+        }
+    }
+
+
     /**
+     * File creation check
+     *
+     * Function checks if log file was created according FILE_CREATE_TYPE option
+     *
+     * Returns log file name or boolean(false)
+     *
      * @return bool|mixed
      */
     private function checkFileCreation()
@@ -201,9 +295,8 @@ class CliLogger
             }
         } elseif ($this->fileCreateType === self::FILE_CREATE_TYPE_BY_TIME) {
             $lasElementInDir = count(scandir($this->logFilePath));
-            $lastModified = filemtime($logFilePath);
-            $lastModifiedLogFileDate = strtotime(explode('_', scandir($this->logFilePath)[$lasElementInDir - 1])[0] . "+" . $this->fileReCreateDays . " day");
-            if (file_exists($logFilePath) && $lastModified >= $lastModifiedLogFileDate) {
+            $lastModifiedLogFileDate = strtotime(explode('_', scandir($this->logFilePath)[$lasElementInDir - 1])[0] . '+' . $this->fileReCreateDays . ' day');
+            if (file_exists($logFilePath) && strtotime(date($this->logFileDateFormat)) >= $lastModifiedLogFileDate) {
                 return $logFileName;
             }
         }
@@ -211,8 +304,11 @@ class CliLogger
         return false;
     }
 
-
     /**
+     * Get latest log
+     *
+     * Return latest log file from log directory
+     *
      * @return bool|mixed
      */
     private function getLatestLogFile()
