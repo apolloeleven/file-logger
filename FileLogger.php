@@ -16,8 +16,9 @@ class FileLogger
 
     const FILE_CREATE_TYPE_BY_SIZE = 2;
 
-
-    public $saveLatestFileNumber = 1;
+    //latest log count to save
+    // bool/integer
+    public $saveLatestFileNumber = 100;
 
     //color option for log text
     public $enableColors = true;
@@ -145,7 +146,7 @@ class FileLogger
         file_put_contents($this->logFilePath . '/' . $this->processFileTemplate($expiredLogFile), $message, FILE_APPEND);
 
 
-        if ($this->saveLatestFileNumber > 1) {
+        if ($this->saveLatestFileNumber) {
             /*check old logs and delete them*/
             $this->deleteOldLogs();
 
@@ -243,7 +244,7 @@ class FileLogger
 
             $logFilePath = $this->logFilePath;
             $logFileName = $this->logFileName;
-            $files = glob("${$logFilePath}/*.${$logFileName}");
+            $files = glob("$logFilePath/*.$logFileName");
             $allFilesArray = [];
 
             foreach ($files as $key => $file) {
@@ -255,7 +256,7 @@ class FileLogger
                 return $b['time'] - $a['time'];
             });
 
-            if (count($allFilesArray) > $this->saveLatestFileNumber && $this->saveLatestFileNumber > 1) {
+            if (count($allFilesArray) > $this->saveLatestFileNumber) {
                 for ($i = 0; $i < $this->saveLatestFileNumber; $i++) {
                     if ($allFilesArray[$i]['time'] >= date($this->logFileDateFormat)) {
                         unset($allFilesArray[$i]);
