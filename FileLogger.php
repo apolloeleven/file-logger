@@ -20,6 +20,10 @@ class FileLogger
     // bool/integer
     public $saveLatestFileNumber = 100;
 
+    //Force create directory if directory does not exist
+    //Throws error if directory path was given by mistake
+    public $forceCreateDirectory = false;
+
     //color option for log text
     public $enableColors = true;
 
@@ -135,7 +139,11 @@ class FileLogger
     private function writeLog($message, $fColor, $bColor = null)
     {
         if (!file_exists($this->logFilePath)) {
-            throw new \Exception('logFilePath is invalid');
+            if ($this->forceCreateDirectory) {
+                $this->rmkdir($this->logFilePath);
+            } else {
+                throw new \Exception(self::class . '::$logFilePath is invalid');
+            }
         }
         if ($this->enableColors === true) {
             $message = FileColor::getColoredString($message, $fColor, $bColor);
@@ -329,5 +337,28 @@ class FileLogger
         }
 
         return false;
+    }
+
+    /**
+     * @param $path
+     */
+    private function rmkdir($path)
+    {
+        $path = str_replace("\\", "/", $path);
+        $path = explode("/", $path);
+
+        $rebuild = '';
+        foreach ($path AS $p) {
+
+            if (strstr($p, ":") != false) {
+                $rebuild = $p;
+                continue;
+            }
+            $rebuild .= "/$p";
+            if (!is_dir($rebuild)) mkdir($rebuild);
+        }
+        if ($rebuild) {
+            return true;
+        }
     }
 }

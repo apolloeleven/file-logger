@@ -59,6 +59,15 @@ enableColors       //colored text for logs , deafult value true
 saveLatestFileNumber       // bool/integer , deafult value 100 (will save only last 100 log files)
 ```
 
+<h5>Force create</h5>
+
+```
+//Force create directory if directory does not exist
+//Throws error if directory path was invalid  
+      
+forceCreateDirectory   // bool default value false 
+```
+
 <h5>Log file recreation type</h5>
 
 ```
