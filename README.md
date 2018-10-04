@@ -21,7 +21,7 @@ to the require section of your `composer.json` file.
 
 ## Basic usage ##
 
-```
+```php
 include_once 'FileColor.php';
 include_once 'FileLogger.php';
 
@@ -53,7 +53,7 @@ FILE_CREATE_TYPE_BY_SIZE    //recreate log file by size
 enableColors       //colored text for logs , deafult value true
 ```
 
-<h5>save latest logs</h5>
+<h5>Save latest logs</h5>
 
 ```
 saveLatestFileNumber       // bool/integer , deafult value 100 (will save only last 100 log files)
