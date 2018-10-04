@@ -6,10 +6,10 @@
  * Time: 3:17 PM
  */
 
-namespace apollo11\cliLogger;
+namespace apollo11\fileLogger;
 
 
-class CliColor
+class FileColor
 {
     // Text color options for log text
     const F_BLACK = '0;30';

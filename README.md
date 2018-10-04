@@ -1,4 +1,4 @@
-# cli-logger
+# File-logger
 
 Installation
 ------------
@@ -8,13 +8,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist apollo11/cli-logger "*"
+php composer.phar require --prefer-dist apollo11/file-logger "*"
 ```
 
 or add
 
 ```
-"apollo11/cli-logger": "*"
+"apollo11/file-logger": "*"
 ```
 
 to the require section of your `composer.json` file.
@@ -22,10 +22,10 @@ to the require section of your `composer.json` file.
 ## Basic usage ##
 
 ```
-include_once 'CliColor.php';
-include_once 'CliLogger.php';
+include_once 'FileColor.php';
+include_once 'FileLogger.php';
 
-$logger = new \apollo11\cliLogger\CliLogger([
+$logger = new \apollo11\fileLogger\FileLogger([
     'logFilePath' => dirname(__FILE__) . '/logs',
     'logFileName' => 'test12.log',
     'logFileDateFormat' => "Y_m_d_H_i_s",
@@ -35,7 +35,7 @@ $logger = new \apollo11\cliLogger\CliLogger([
 ]);
 
 for ($i = 0; $i < 20; $i++){
-    $logger->log("My test $i", \apollo11\cliLogger\CliColor::F_WHITE, \apollo11\cliLogger\CliColor::B_GREEN);
+    $logger->log("My test $i", \apollo11\fileLogger\FileColor::F_WHITE, \apollo11\fileLogger\FileColor::B_GREEN);
 }
 
 ```
@@ -58,16 +58,13 @@ enableColors       //colored text for logs , deafult value true
 fileCreateType     //log file creation type  , default value   "FILE_CREATE_TYPE_BY_TIME"
 ```
 
-<h5>Log file recreation units</h5>
+<h5>Log file recreation days</h5>
 
 ```
-Add one of this properties if file recreation type set to   "FILE_CREATE_TYPE_BY_TIME"
+Add  this properties if file recreation type set to   "FILE_CREATE_TYPE_BY_TIME"
 
-fileReCreateMinutes     //  (integer)
-fileReCreateHours       //  (integer)
 fileReCreateDays        //  (integer)
-fileReCreateMonths      //  (integer)
-fileReCreateYears       //  (integer)
+
 ```
 <h5>Log file recreation size</h5>
 
