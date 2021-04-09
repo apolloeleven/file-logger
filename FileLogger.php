@@ -238,7 +238,7 @@ class FileLogger
     {
         $parts = [
             '{date}' => date($this->logTextDateFormat),
-            '{type}' => $type,
+            '{type}' => str_pad($type, 7, ' ', STR_PAD_RIGHT),
             '{message}' => $message,
         ];
 
