@@ -25,25 +25,25 @@ class FileLogger
     public $forceCreateDirectory = false;
 
     //color option for log text
-    public $enableColors = true;
+    public $enableColors = false;
 
     //log file creation type property
-    public $fileCreateType = self::FILE_CREATE_TYPE_BY_SIZE;
+    public $fileCreateType = self::FILE_CREATE_TYPE_BY_TIME;
 
     //Log file recreation units
-    public $fileReCreateMinutes = 1;
+    public $fileReCreateMinutes = 0;
     public $fileReCreateHours = 0;
-    public $fileReCreateDays = 0;
+    public $fileReCreateDays = 1; // New file will be created every day
     public $fileReCreateMonths = 0;
     public $fileReCreateYears = 0;
 
     //Log file recreation size
-    public $filReCreateSize = 900; //size in bytes
+    public $fileReCreateSize = 1 * 1024 * 1024; //1MB
 
     // Log file attributes
     public $logFilePath;
     public $logFileName = 'example.log';
-    public $logFileDateFormat = "Y_m_d";
+    public $logFileDateFormat = "Ymd";
     public $logFileTemplate = "{date}_{fileName}";
 
     // Log text attributes
