@@ -48,7 +48,7 @@ class FileLogger
 
     // Log text attributes
     public $logTextDateFormat = "Y-m-d H:i:s";
-    public $logTextTemplate = "[ {date} | {type} ] - {message} " . PHP_EOL;
+    public $logTextTemplate = '[ {date} ] - [ {type} ] - {message}' . PHP_EOL;
 
 
     /**
@@ -324,16 +324,17 @@ class FileLogger
     {
         $files = [];
         if ($handle = opendir($this->logFilePath)) {
-            while (false !== ($file = readdir($handle))) {
+            $filesArray = glob($this->logFilePath."/*{$this->logFileName}");
+            foreach ($filesArray as $file) {
                 if ($file != "." && $file != ".." && $file != ".gitignore") {
-                    $files[filemtime($this->logFilePath . '/' . $file)] = $file;
+                    $files[filemtime($file)] = $file;
                 }
             }
             closedir($handle);
             // sort
             sort($files);
 
-            return end($files);
+            return basename(end($files));
         }
 
         return false;
